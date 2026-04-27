@@ -1,13 +1,11 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"Backend/api"
 )
 
 func main() {
-	server := gin.Default()
-	server.GET("/test", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{"value": "Hello world"})
-	})
-	server.Run(":8000")
+	server := api.SetupRouter()
+
+	server.Run(":8085")
 }
