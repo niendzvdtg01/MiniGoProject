@@ -17,7 +17,7 @@ func SetupRouter() *gin.Engine {
 	{
 		userApi := serverRouting.Group("/user")
 		{
-			userApi.GET("/", userHandler.GetUserByID)
+			userApi.GET("/:id", userHandler.GetUserByID)
 		}
 		productAPI := serverRouting.Group("/product")
 		{
