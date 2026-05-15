@@ -18,6 +18,7 @@ func SetupRouter() *gin.Engine {
 		userApi := serverRouting.Group("/user")
 		{
 			userApi.GET("/:id", userHandler.GetUserByID)
+			userApi.POST("/info", userHandler.GetUserByName)
 		}
 		productAPI := serverRouting.Group("/product")
 		{
