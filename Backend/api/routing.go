@@ -22,7 +22,8 @@ func SetupRouter() *gin.Engine {
 		}
 		productAPI := serverRouting.Group("/product")
 		{
-			productAPI.POST("", productHandler.PostProducts)
+			productAPI.POST("/all", productHandler.PostProducts)
+			productAPI.POST("/product_info", productHandler.PostProductRequest)
 		}
 	}
 	return server
