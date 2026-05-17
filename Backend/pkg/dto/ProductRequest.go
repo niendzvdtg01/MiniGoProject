@@ -4,6 +4,7 @@ type PostProduct struct {
 	Name         string       `json:"product_name" binding:"required,min=3,max=100"`
 	ProductImage ProductImage `json:"product_image" binding:"required"`
 	Display      bool         `json:"display"`
+	Tags         []string     `json:"tag" binding:"required,gt=0,lt=5"`
 }
 
 type ProductRequest struct {
@@ -13,6 +14,6 @@ type ProductRequest struct {
 }
 
 type ProductImage struct {
-	ImageName string `json:"image_name" binding:"required"`
+	ImageName string `json:"image_name" binding:"required,file_extension=jpg png mp4"`
 	ImageLink string `json:"image_link" binding:"required"`
 }

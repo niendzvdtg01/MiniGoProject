@@ -24,7 +24,7 @@ func (p *ProductHandler) PostProducts(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		fmt.Println(err)
-		ctx.JSON(http.StatusBadRequest, gin.H{"Error": err})
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": utils.HandleValidatorErrors(err)})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{

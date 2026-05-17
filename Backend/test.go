@@ -1,10 +1,13 @@
-package test
+package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func main() {
-	var cc = make([]int, 1)
-
-	cc = append(cc, 22)
-	fmt.Println(cc)
+	var cc string = "abc,cde,asjdja"
+	afterTest := strings.Split(cc, ",")
+	joinTest := strings.Join(afterTest, "")
+	fmt.Println(afterTest, joinTest)
 }

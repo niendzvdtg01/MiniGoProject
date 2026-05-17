@@ -2,7 +2,9 @@ package utils
 
 import (
 	"fmt"
+	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -39,6 +41,9 @@ func HandleValidatorErrors(err error) gin.H {
 				errors[e.Field()] = fmt.Sprintf("%s must be smaller than: %s", e.Field(), e.Tag())
 			case "min_int":
 				errors[e.Field()] = fmt.Sprintf("%s must be bigger than: %s", e.Field(), e.Tag())
+			case "file_extension":
+				allowedValues := strings.Join(strings.Split(e.Param(), " "), ",")
+				errors[e.Field()] = fmt.Sprintf("%s only accept the file have extension %s", e.Field(), allowedValues)
 			}
 
 		}
@@ -69,6 +74,24 @@ func RegisterValidation() error {
 			return false
 		}
 		return fl.Field().Int() <= maxVal
+	})
+	//file extension:jpg, mp4...
+	v.RegisterValidation("file_extension", func(fl validator.FieldLevel) bool {
+		fileName := fl.Field().String()
+		allowedStr := fl.Param()
+		if allowedStr == "" {
+			return false
+		}
+		allowExtension := strings.Fields(allowedStr)
+
+		ext := strings.TrimPrefix(strings.ToLower(filepath.Ext(fileName)), ".")
+
+		for _, allowed := range allowExtension {
+			if ext == strings.ToLower(allowed) {
+				return true
+			}
+		}
+		return false
 	})
 	return nil
 }
