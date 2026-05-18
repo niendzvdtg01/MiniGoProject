@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -15,35 +16,55 @@ func HandleValidatorErrors(err error) gin.H {
 	if validationError, ok := err.(validator.ValidationErrors); ok {
 		errors := make(map[string]string)
 		for _, e := range validationError {
+			log.Printf("%s", e.Namespace())
+			//split each attribute
+			root := strings.Split(e.Namespace(), ".")[0]
+
+			rawPath := strings.TrimPrefix(e.Namespace(), root+".")
+
+			parts := strings.Split(rawPath, ".")
+			for i, part := range parts {
+				if strings.Contains("part", "[") {
+					idx := strings.Index(part, "[")
+					base := camelToSnake(part[:idx]) // 0 den truoc dau vuong [
+					index := part[idx:]
+					parts[i] = base + index
+				} else {
+					parts[i] = camelToSnake(part)
+				}
+			}
+
+			fieldPath := strings.Join(parts, ".")
+
 			switch e.Tag() {
 			case "gt":
-				errors[e.Field()] = e.Field() + " the number must be larger than zero!"
+				errors[fieldPath] = fieldPath + " the number must be larger than zero!"
 			case "uuid":
-				errors[e.Field()] = e.Field() + " the number must be a valid uuid!"
+				errors[fieldPath] = fieldPath + " the number must be a valid uuid!"
 			case "slug":
-				errors[e.Field()] = e.Field() + " Only have normal letters, numbers...!"
+				errors[fieldPath] = fieldPath + " Only have normal letters, numbers...!"
 			case "min":
-				errors[e.Field()] = fmt.Sprintf(
+				errors[fieldPath] = fmt.Sprintf(
 					"%s must have at least %s characters",
-					e.Field(),
+					fieldPath,
 					e.Param(),
 				)
 
 			case "max":
-				errors[e.Field()] = fmt.Sprintf(
+				errors[fieldPath] = fmt.Sprintf(
 					"%s must not exceed %s characters",
-					e.Field(),
+					fieldPath,
 					e.Param(),
 				)
 			case "search":
-				errors[e.Field()] = e.Field() + " contains invalid characters"
+				errors[fieldPath] = fieldPath + " contains invalid characters"
 			case "max_int":
-				errors[e.Field()] = fmt.Sprintf("%s must be smaller than: %s", e.Field(), e.Tag())
+				errors[fieldPath] = fmt.Sprintf("%s must be smaller than: %s", fieldPath, e.Tag())
 			case "min_int":
-				errors[e.Field()] = fmt.Sprintf("%s must be bigger than: %s", e.Field(), e.Tag())
+				errors[fieldPath] = fmt.Sprintf("%s must be bigger than: %s", fieldPath, e.Tag())
 			case "file_extension":
 				allowedValues := strings.Join(strings.Split(e.Param(), " "), ",")
-				errors[e.Field()] = fmt.Sprintf("%s only accept the file have extension %s", e.Field(), allowedValues)
+				errors[fieldPath] = fmt.Sprintf("%s only accept the file have extension %s", fieldPath, allowedValues)
 			}
 
 		}

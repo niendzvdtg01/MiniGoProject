@@ -28,9 +28,10 @@ func (p *ProductHandler) PostProducts(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"name":          input.Name,
-		"product_image": input.ProductImage,
-		"display":       input.Display,
+		"name":              input.Name,
+		"product_image":     input.ProductImage,
+		"display":           input.Display,
+		"product_attribute": input.ProductAttribute,
 	})
 }
 
