@@ -2,11 +2,14 @@ package main
 
 import (
 	"Backend/api"
+	"Backend/internal/service"
 	"Backend/pkg/utils"
 )
 
 func main() {
-	server := api.SetupRouter()
+	//service declare
+	productService := service.NewProductService()
+	server := api.SetupRouter(productService)
 	if err := utils.RegisterValidation(); err != nil {
 		panic(err)
 	}

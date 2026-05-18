@@ -37,6 +37,8 @@ func HandleValidatorErrors(err error) gin.H {
 			fieldPath := strings.Join(parts, ".")
 
 			switch e.Tag() {
+			case "required":
+				errors[fieldPath] = fmt.Sprintf("%s is a must", fieldPath)
 			case "gt":
 				errors[fieldPath] = fieldPath + " the number must be larger than zero!"
 			case "uuid":

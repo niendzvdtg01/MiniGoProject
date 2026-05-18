@@ -2,17 +2,18 @@ package api
 
 import (
 	"Backend/internal/handler"
+	"Backend/internal/service"
 
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter() *gin.Engine {
+func SetupRouter(productService *service.ProductService) *gin.Engine {
 	server := gin.Default()
 	//define user handler
 
 	userHandler := handler.NewUserHandler()
 	//product handler
-	productHandler := handler.NewProductHandler()
+	productHandler := handler.NewProductHandler(productService)
 	serverRouting := server.Group("/api")
 	{
 		userApi := serverRouting.Group("/user")

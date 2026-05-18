@@ -1,21 +1,26 @@
 package handler
 
 import (
+	"Backend/internal/service"
 	"Backend/pkg/dto"
 	"Backend/pkg/utils"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type ProductHandler struct {
+	productService *service.ProductService
 }
 
 //validate data
 
-func NewProductHandler() *ProductHandler {
-	return &ProductHandler{}
+func NewProductHandler(productService *service.ProductService) *ProductHandler {
+	return &ProductHandler{
+		productService: productService,
+	}
 }
 
 func (p *ProductHandler) PostProducts(ctx *gin.Context) {
@@ -27,11 +32,21 @@ func (p *ProductHandler) PostProducts(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"Error": utils.HandleValidatorErrors(err)})
 		return
 	}
+
+	if err := p.productService.ValidateUUID(input); err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"name":              input.Name,
 		"product_image":     input.ProductImage,
 		"display":           input.Display,
 		"product_attribute": input.ProductAttribute,
+		"product_info":      input.ProductInfo,
+		"product_metadata":  input.ProductMetaData,
 	})
 }
 

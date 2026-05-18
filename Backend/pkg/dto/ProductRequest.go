@@ -7,6 +7,7 @@ type PostProduct struct {
 	Tags             []string               `json:"tag" binding:"required,gt=0,lt=5"`
 	ProductAttribute []ProductAttribute     `json:"product_attribute" binding:"required,gt=0,dive"`
 	ProductInfo      map[string]ProductInfo `json:"product_info" binding:"required"`
+	ProductMetaData  map[string]any         `json:"product_metadata" binding:"omitempty"`
 }
 
 type ProductRequest struct {
