@@ -15,7 +15,7 @@ func worker(id int, jobs <-chan int, result chan<- int, wg *sync.WaitGroup) {
 	}
 }
 
-func main() {
+func test() {
 	jobs := make(chan int, 10)
 	reusults := make(chan int, 10)
 	var wg sync.WaitGroup
