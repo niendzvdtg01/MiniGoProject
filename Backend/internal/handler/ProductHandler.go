@@ -63,3 +63,7 @@ func (p *ProductHandler) PostProductRequest(ctx *gin.Context) {
 		"price":        input.Price,
 	})
 }
+
+func (p *ProductHandler) PostCategoryV1() {
+
+}

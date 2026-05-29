@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Backend/api"
+	"Backend/api/v1"
 	"Backend/internal/service"
 	"Backend/pkg/utils"
 )
