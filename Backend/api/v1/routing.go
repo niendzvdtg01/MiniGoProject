@@ -16,6 +16,7 @@ func SetupRouter(productService *service.ProductService) *gin.Engine {
 	productHandler := handler.NewProductHandler(productService)
 	categoryHandler := handler.NewCategoryHandler()
 	newsHandler := handler.NewNewsHandler()
+	messageHandler := handler.NewMessageHandler()
 	serverRouting := server.Group("/api")
 	{
 		userApi := serverRouting.Group("/user")
@@ -35,6 +36,10 @@ func SetupRouter(productService *service.ProductService) *gin.Engine {
 		newsAPI := serverRouting.Group("/news")
 		{
 			newsAPI.POST("", newsHandler.PostNewsV1)
+		}
+		messageAPI := serverRouting.Group("/message")
+		{
+			messageAPI.POST("/post_message", messageHandler.PostMessgaeV1)
 		}
 	}
 	return server

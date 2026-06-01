@@ -33,6 +33,13 @@ func (n *NewsHandler) PostNewsV1(ctx *gin.Context) {
 		})
 		return
 	}
+	if img.Size > 5<<20 {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "file is over size(1 byte)",
+		})
+		return
+	}
+
 	//have permission
 	err = os.MkdirAll("./uploads", os.ModePerm)
 
