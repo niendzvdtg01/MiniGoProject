@@ -61,3 +61,25 @@ func (n *NewsHandler) PostNewsV1(ctx *gin.Context) {
 		"path":   dst,
 	})
 }
+
+func (n *NewsHandler) PostUploadFileNewsV1(ctx *gin.Context) {
+	var input dto.PostNewsV1
+	if err := ctx.ShouldBind(&input); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": utils.HandleValidatorErrors(err),
+		})
+		return
+	}
+	img, err := ctx.FormFile("image")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "file is a required",
+		})
+		return
+	}
+	ctx.JSON(http.StatusAccepted, gin.H{
+		"name":   input.Title,
+		"Status": input.Status,
+		"img":    img.Filename,
+	})
+}
