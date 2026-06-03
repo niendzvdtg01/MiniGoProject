@@ -77,9 +77,18 @@ func (n *NewsHandler) PostUploadFileNewsV1(ctx *gin.Context) {
 		})
 		return
 	}
+
+	imageName, err := utils.ValidateAndSaveFile(img, "/new_file")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	ctx.JSON(http.StatusAccepted, gin.H{
 		"name":   input.Title,
 		"Status": input.Status,
-		"img":    img.Filename,
+		"img":    imageName,
 	})
 }
