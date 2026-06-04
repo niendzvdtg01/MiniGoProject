@@ -78,7 +78,7 @@ func (n *NewsHandler) PostUploadFileNewsV1(ctx *gin.Context) {
 		return
 	}
 
-	imageName, err := utils.ValidateAndSaveFile(img, "/new_file")
+	imageName, err := utils.ValidateAndSaveFile(img, "./new_file")
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -91,4 +91,61 @@ func (n *NewsHandler) PostUploadFileNewsV1(ctx *gin.Context) {
 		"Status": input.Status,
 		"img":    imageName,
 	})
+}
+
+func (n *NewsHandler) UploadMultipleFile(ctx *gin.Context) {
+	var input dto.PostNewsV1
+	if err := ctx.ShouldBind(&input); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	form, err := ctx.MultipartForm()
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	images := form.File["images"]
+
+	if len(images) == 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "no file was selected",
+		})
+		return
+	}
+
+	var (
+		successFile []string
+		failFile    []map[string]string
+	)
+	for _, file := range images {
+		imageNames, err := utils.ValidateAndSaveFile(file, "./form-file")
+		if err != nil {
+			failFile = append(failFile, map[string]string{
+				"file_name": file.Filename,
+				"error":     err.Error(),
+			})
+			continue
+		}
+
+		successFile = append(successFile, imageNames)
+	}
+
+	resp := gin.H{
+		"message":    "New file upload",
+		"title":      input.Title,
+		"status":     input.Status,
+		"image_name": successFile,
+	}
+
+	if len(failFile) > 0 {
+		resp["message"] = "Upload completed with partial error"
+		resp["error"] = failFile
+	}
+
+	ctx.JSON(http.StatusOK, resp)
 }

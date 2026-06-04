@@ -37,6 +37,7 @@ func SetupRouter(productService *service.ProductService) *gin.Engine {
 		{
 			newsAPI.POST("", newsHandler.PostNewsV1)
 			newsAPI.POST("/image", newsHandler.PostUploadFileNewsV1)
+			newsAPI.POST("/upload-multiple-file", newsHandler.UploadMultipleFile)
 		}
 		messageAPI := serverRouting.Group("/message")
 		{

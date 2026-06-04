@@ -73,7 +73,7 @@ func ValidateAndSaveFile(fileHeader *multipart.FileHeader, uploadDir string) (st
 		return "", err
 	}
 
-	return "", nil
+	return filename, nil
 }
 
 func saveFile(fileHeader *multipart.FileHeader, destination string) error {
