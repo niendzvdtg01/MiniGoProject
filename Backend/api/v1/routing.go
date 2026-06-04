@@ -44,5 +44,7 @@ func SetupRouter(productService *service.ProductService) *gin.Engine {
 			messageAPI.POST("/post_message", messageHandler.PostMessgaeV1)
 		}
 	}
+
+	server.StaticFS("/images", gin.Dir("./form-file", false))
 	return server
 }

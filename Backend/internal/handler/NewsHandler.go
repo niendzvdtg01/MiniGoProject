@@ -94,6 +94,8 @@ func (n *NewsHandler) PostUploadFileNewsV1(ctx *gin.Context) {
 }
 
 func (n *NewsHandler) UploadMultipleFile(ctx *gin.Context) {
+	const publicUrl = "http://localhost:8085/images/"
+
 	var input dto.PostNewsV1
 	if err := ctx.ShouldBind(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -131,9 +133,11 @@ func (n *NewsHandler) UploadMultipleFile(ctx *gin.Context) {
 			})
 			continue
 		}
+		publicImageUrl := publicUrl + imageNames
 
-		successFile = append(successFile, imageNames)
+		successFile = append(successFile, publicImageUrl)
 	}
+	//public images  ye ye hu hu
 
 	resp := gin.H{
 		"message":    "New file upload",
