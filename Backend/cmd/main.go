@@ -12,8 +12,9 @@ import (
 func main() {
 	//service declare
 
-	if err := godotenv.Load(); err != nil {
-		log.Println("No .env variables were found")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading sendgrid.env file")
 	}
 	productService := service.NewProductService()
 	server := api.SetupRouter(productService)
