@@ -2,6 +2,7 @@ package api
 
 import (
 	"Backend/internal/handler"
+	"Backend/internal/middlewares"
 	"Backend/internal/service"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +22,7 @@ func SetupRouter(productService *service.ProductService) *gin.Engine {
 	{
 		userApi := serverRouting.Group("/user")
 		{
-			userApi.GET("/:id", userHandler.GetUserByID)
+			userApi.GET("/:id", middlewares.SimpleMiddleWare(), userHandler.GetUserByID)
 			userApi.POST("/info", userHandler.GetUserByName)
 		}
 		productAPI := serverRouting.Group("/product")
