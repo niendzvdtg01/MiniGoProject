@@ -69,6 +69,9 @@ func RatelimitingMiddleware() gin.HandlerFunc {
 				"error":   "Too many request",
 				"message": "You sent too much request, please try again in 1 munite later",
 			})
+			return
 		}
+
+		ctx.Next()
 	}
 }

@@ -18,6 +18,7 @@ func SetupRouter(productService *service.ProductService) *gin.Engine {
 	categoryHandler := handler.NewCategoryHandler()
 	newsHandler := handler.NewNewsHandler()
 	messageHandler := handler.NewMessageHandler()
+	server.Use(middlewares.LoggerMiddleware())
 	serverRouting := server.Group("/api")
 	{
 		userApi := serverRouting.Group("/user").Use(middlewares.RatelimitingMiddleware())

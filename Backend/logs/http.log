@@ -1,0 +1,37 @@
+{
+  "level": "info",
+  "method": "GET",
+  "path": "/api/user/1",
+  "query": "",
+  "ip": "::1",
+  "user_agent": "PostmanRuntime/7.54.0",
+  "referer": "",
+  "protocol": "HTTP/1.1",
+  "host": "localhost:8085",
+  "remote_addr": "[::1]:43584",
+  "request_uri": "/api/user/1",
+  "content_length": 0,
+  "header": {
+    "Accept": [
+      "*/*"
+    ],
+    "Accept-Encoding": [
+      "gzip, deflate, br"
+    ],
+    "Connection": [
+      "keep-alive"
+    ],
+    "Postman-Token": [
+      "864a2184-abb8-451d-a7be-841b1d887d0b"
+    ],
+    "User-Agent": [
+      "PostmanRuntime/7.54.0"
+    ],
+    "X-Api-Key": [
+      "1245"
+    ]
+  },
+  "status_code": 200,
+  "time": "2026-06-07T22:58:14+07:00",
+  "message": "HTTP Request Log"
+}
