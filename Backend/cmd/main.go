@@ -2,6 +2,7 @@ package main
 
 import (
 	"Backend/api/v1"
+	"Backend/internal/middlewares"
 	"Backend/internal/service"
 	"Backend/pkg/utils"
 	"log"
@@ -18,6 +19,9 @@ func main() {
 	}
 	productService := service.NewProductService()
 	server := api.SetupRouter(productService)
+
+	go middlewares.CleanupClients()
+
 	if err := utils.RegisterValidation(); err != nil {
 		panic(err)
 	}

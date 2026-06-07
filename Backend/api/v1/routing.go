@@ -20,7 +20,7 @@ func SetupRouter(productService *service.ProductService) *gin.Engine {
 	messageHandler := handler.NewMessageHandler()
 	serverRouting := server.Group("/api")
 	{
-		userApi := serverRouting.Group("/user")
+		userApi := serverRouting.Group("/user").Use(middlewares.RatelimitingMiddleware())
 		{
 			userApi.GET("/:id", middlewares.ApiKeyMiddleware(), userHandler.GetUserByID)
 			userApi.POST("/info", userHandler.GetUserByName)
