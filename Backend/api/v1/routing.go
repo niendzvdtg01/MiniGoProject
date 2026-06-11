@@ -26,7 +26,7 @@ func SetupRouter(productService *service.ProductService) *gin.Engine {
 			userApi.GET("/:id", middlewares.ApiKeyMiddleware(), userHandler.GetUserByID)
 			userApi.POST("/info", userHandler.GetUserByName)
 		}
-		productAPI := serverRouting.Group("/product")
+		productAPI := serverRouting.Group("/product").Use(middlewares.LoggerMiddleware())
 		{
 			productAPI.POST("/all", productHandler.PostProducts)
 			productAPI.POST("/product_info", productHandler.PostProductRequest)

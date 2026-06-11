@@ -11,9 +11,9 @@ type PostProduct struct {
 }
 
 type ProductRequest struct {
-	ProductName string `json:"product_name" binding:"required,max=30,min=3"`
-	Price       int    `json:"price" binding:"required,min_int=1,max_int=1000000"`
-	BestSaling  bool   `json:"best_saling" binding:"required"`
+	ProductName string `form:"product_name" binding:"required,max=30,min=3"`
+	Price       int    `form:"price" binding:"required,min_int=1,max_int=1000000"`
+	BestSaling  bool   `form:"best_saling" binding:"required"`
 }
 
 type ProductImage struct {

@@ -1,10 +1,14 @@
 package middlewares
 
 import (
-	"fmt"
+	"bytes"
+	"encoding/json"
 	"io"
+	"log"
+	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -28,12 +32,35 @@ func LoggerMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		start := time.Now()
 
-		bodyBytes, err := io.ReadAll(ctx.Request.Body)
-		if err != nil {
-			logger.Error().Err(err).Msg("FAILED to read request body")
-		}
+		contentTye := ctx.GetHeader("Content-Type")
+		//
+		requestBody := make(map[string]any)
 
-		fmt.Printf("%v", bodyBytes)
+		if strings.HasPrefix(contentTye, "multipart/form-data") {
+			log.Println("multipart/form-data")
+		} else {
+			bodyBytes, err := io.ReadAll(ctx.Request.Body)
+			if err != nil {
+				logger.Error().Err(err).Msg("FAILED to read request body")
+			}
+
+			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+
+			if strings.HasPrefix(contentTye, "application/json") {
+				_ = json.Unmarshal(bodyBytes, &requestBody)
+			} else {
+				//
+				values, _ := url.ParseQuery(string(bodyBytes))
+				log.Println(values)
+				for key, vals := range values {
+					if len(vals) == 1 {
+						requestBody[key] = vals[0]
+					} else {
+						requestBody[key] = vals
+					}
+				}
+			}
+		}
 
 		ctx.Next()
 
@@ -62,6 +89,7 @@ func LoggerMiddleware() gin.HandlerFunc {
 			Int64("content_length", ctx.Request.ContentLength).
 			Interface("header", ctx.Request.Header).
 			Int("status_code", statusCode).
+			Interface("body_request", ctx.Request.Body).
 			Int64("status_code", duration.Microseconds()).Msg("HTTP Request Log")
 	}
 }
