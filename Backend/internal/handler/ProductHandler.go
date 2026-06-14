@@ -57,10 +57,28 @@ func (p *ProductHandler) PostProductRequest(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"Error": utils.HandleValidatorErrors(err)})
 		return
 	}
+
+	file, err := ctx.FormFile("file")
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "file noot found!",
+		})
+	}
+
+	fileName, err := utils.ValidateAndSaveFile(file, "./file")
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+	}
+
 	ctx.JSON(http.StatusAccepted, gin.H{
 		"product_name": input.ProductName,
 		"best_saling":  input.BestSaling,
 		"price":        input.Price,
+		"file_name":    fileName,
 	})
 }
 

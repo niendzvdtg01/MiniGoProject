@@ -8,9 +8,9 @@
   "referer": "",
   "protocol": "HTTP/1.1",
   "host": "localhost:8085",
-  "remote_addr": "[::1]:38876",
+  "remote_addr": "[::1]:37304",
   "request_uri": "/api/product/product_info",
-  "content_length": 52,
+  "content_length": 148131,
   "header": {
     "Accept": [
       "*/*"
@@ -22,13 +22,13 @@
       "keep-alive"
     ],
     "Content-Length": [
-      "52"
+      "148131"
     ],
     "Content-Type": [
-      "application/x-www-form-urlencoded"
+      "multipart/form-data; boundary=--------------------------278146905816803123939804"
     ],
     "Postman-Token": [
-      "d0c5248f-3b9f-4bea-a372-d39e6128efa9"
+      "cfa3304c-3dc7-4435-b98f-12c51eb074c7"
     ],
     "User-Agent": [
       "PostmanRuntime/7.54.0"
@@ -38,10 +38,19 @@
     ]
   },
   "status_code": 202,
-  "body_request": {
-    "Reader": {}
+  "body": {
+    "best_saling": "true",
+    "form_files": [
+      {
+        "content_type": "image/jpeg",
+        "field": "file",
+        "filename": "me.jpg",
+        "size": "144.13 KB"
+      }
+    ],
+    "price": "11111",
+    "product_name": "asad"
   },
-  "status_code": 96,
-  "time": "2026-06-11T22:19:38+07:00",
+  "time": "2026-06-14T11:28:44+07:00",
   "message": "HTTP Request Log"
 }
