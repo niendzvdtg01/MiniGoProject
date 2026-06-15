@@ -16,6 +16,16 @@ import (
 	"github.com/rs/zerolog"
 )
 
+type CustomResponseWriter struct {
+	gin.ResponseWriter
+	body *bytes.Buffer
+}
+
+func (w *CustomResponseWriter) Write(data []byte) (n int, err error) {
+	w.body.Write(data)
+	return w.ResponseWriter.Write(data)
+}
+
 func LoggerMiddleware() gin.HandlerFunc {
 	logPath := "logs/http.log"
 
@@ -90,6 +100,13 @@ func LoggerMiddleware() gin.HandlerFunc {
 			}
 		}
 
+		customWriter := &CustomResponseWriter{
+			ResponseWriter: ctx.Writer,
+			body:           bytes.NewBufferString(""),
+		}
+
+		ctx.Writer = customWriter
+
 		ctx.Next()
 
 		duration := time.Since(start)
@@ -97,6 +114,23 @@ func LoggerMiddleware() gin.HandlerFunc {
 		logEvent := logger.Info()
 
 		statusCode := ctx.Writer.Status()
+		//
+		responseContentType := ctx.Writer.Header().Get("Content-Type")
+		//
+		responseBodyRaw := customWriter.body.String()
+
+		var responseBodyParsed interface{}
+		if strings.HasPrefix(responseContentType, "image/") {
+			responseBodyParsed = "[BINARY DATA]"
+		} else if strings.HasPrefix(contentTye, "application/json") ||
+			strings.HasPrefix(strings.TrimSpace(responseBodyRaw), "{") ||
+			strings.HasPrefix(strings.TrimSpace(responseBodyRaw), "[") {
+			if err := json.Unmarshal([]byte(responseBodyRaw), responseBodyParsed); err != nil {
+				responseBodyParsed = responseBodyRaw
+			}
+		} else {
+			responseBodyParsed = responseBodyRaw
+		}
 
 		if statusCode >= 500 {
 			logEvent = logger.Error()
@@ -117,6 +151,7 @@ func LoggerMiddleware() gin.HandlerFunc {
 			Int64("content_length", ctx.Request.ContentLength).
 			Interface("header", ctx.Request.Header).
 			Int("status_code", statusCode).
+			Interface("response_body", responseBodyParsed).
 			Interface("body", requestBody).
 			Int64("status_code", duration.Microseconds()).Msg("HTTP Request Log")
 	}
