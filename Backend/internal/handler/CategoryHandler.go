@@ -25,9 +25,20 @@ func (c *CategoryHandler) PostCategoryHandler(ctx *gin.Context) {
 		})
 		return
 	}
+
+	value, exists := ctx.Get("username")
+
+	if !exists {
+		log.Println(value)
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "invalide username",
+		})
+		return
+	}
 	ctx.JSON(http.StatusAccepted, gin.H{
-		"name":   input.Name,
-		"Status": input.Status,
+		"name":     input.Name,
+		"Status":   input.Status,
+		"username": value,
 	})
 
 }

@@ -31,7 +31,7 @@ func SetupRouter(productService *service.ProductService) *gin.Engine {
 			productAPI.POST("/all", productHandler.PostProducts)
 			productAPI.POST("/product_info", productHandler.PostProductRequest)
 		}
-		categoryAPI := serverRouting.Group("/category")
+		categoryAPI := serverRouting.Group("/category").Use(middlewares.ApiKeyMiddleware())
 		{
 			categoryAPI.POST("", categoryHandler.PostCategoryHandler)
 		}

@@ -30,6 +30,7 @@ func ApiKeyMiddleware() gin.HandlerFunc {
 			})
 			return
 		}
+		ctx.Set("username", "Nien")
 		ctx.Next()
 	}
 }
