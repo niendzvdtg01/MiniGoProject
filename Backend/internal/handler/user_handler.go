@@ -1,16 +1,19 @@
 package handler
 
 import (
+	"backend/internal/service"
 	"backend/pkg/dto"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-type UserHandler struct{}
+type UserHandler struct {
+	userService *service.UserService
+}
 
-func NewUserHandler() *UserHandler {
-	return &UserHandler{}
+func NewUserHandler(userService *service.UserService) *UserHandler {
+	return &UserHandler{userService: userService}
 }
 func (h *UserHandler) GetUserByID(ctx *gin.Context) {
 	id := ctx.Param("id")
