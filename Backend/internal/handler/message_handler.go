@@ -10,14 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type MessageHandler struct {
-}
+type MessageHandler struct{}
 
 func NewMessageHandler() *MessageHandler {
 	return &MessageHandler{}
 }
 
-func (m *MessageHandler) PostMessgaeV1(ctx *gin.Context) {
+func (h *MessageHandler) PostMessage(ctx *gin.Context) {
 	msg, err := ctx.FormFile("message")
 	if err != nil {
 		log.Println(err)
@@ -38,7 +37,7 @@ func (m *MessageHandler) PostMessgaeV1(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusInternalServerError, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"message":   "Successfully",
 		"file_name": msg.Filename,
 	})

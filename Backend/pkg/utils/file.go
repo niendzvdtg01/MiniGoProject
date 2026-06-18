@@ -26,21 +26,19 @@ var allowMimetypes = map[string]bool{
 
 const maxSize = 5 << 20
 
-// ValidateAndUploadFile(file, "./uploads")
 func ValidateAndSaveFile(fileHeader *multipart.FileHeader, uploadDir string) (string, error) {
-	ext := strings.ToLower(filepath.Ext((fileHeader.Filename)))
+	ext := strings.ToLower(filepath.Ext(fileHeader.Filename))
 
 	if !allowExts[ext] {
-		return "", errors.New("unsuported file extension~!")
+		return "", errors.New("unsupported file extension")
 	}
 	if fileHeader.Size > maxSize {
-		return "", errors.New("file too large (max 5)")
+		return "", errors.New("file too large (max 5 MB)")
 	}
 
 	file, err := fileHeader.Open()
-	//
 	if err != nil {
-		return "", errors.New("Canot open file!")
+		return "", errors.New("cannot open file")
 	}
 
 	defer file.Close()
@@ -48,23 +46,19 @@ func ValidateAndSaveFile(fileHeader *multipart.FileHeader, uploadDir string) (st
 	buffer := make([]byte, 512)
 
 	_, err = file.Read(buffer)
-
 	if err != nil {
-		return "", errors.New("canot read file")
+		return "", errors.New("cannot read file")
 	}
 
 	mimeType := http.DetectContentType(buffer)
 
 	if !allowMimetypes[mimeType] {
-		return "", fmt.Errorf("invalide mimetype:%s", mimeType)
+		return "", fmt.Errorf("invalid mimetype: %s", mimeType)
 	}
-	//Change file name
 
 	filename := fmt.Sprintf("%s%s", uuid.New().String(), ext)
-	//Create folder if not exist
-
-	if err = os.MkdirAll(uploadDir, os.ModePerm.Perm()); err != nil {
-		return "", errors.New("Canot create upload file")
+	if err = os.MkdirAll(uploadDir, 0o755); err != nil {
+		return "", errors.New("cannot create upload directory")
 	}
 
 	savePath := filepath.Join(uploadDir, filename)

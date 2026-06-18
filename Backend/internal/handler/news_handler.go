@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"Backend/pkg/dto"
-	"Backend/pkg/utils"
+	"backend/pkg/dto"
+	"backend/pkg/utils"
 	"fmt"
 	"net/http"
 	"os"
@@ -11,16 +11,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type NewsHandler struct {
-}
+type NewsHandler struct{}
 
 func NewNewsHandler() *NewsHandler {
 	return &NewsHandler{}
 }
 
-func (n *NewsHandler) PostNewsV1(ctx *gin.Context) {
-	var input dto.PostNewsV1
-	if err := ctx.ShouldBind(&input); err != nil {
+func (h *NewsHandler) CreateNews(ctx *gin.Context) {
+	var request dto.NewsFormRequest
+	if err := ctx.ShouldBind(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": utils.HandleValidatorErrors(err),
 		})
@@ -28,22 +27,17 @@ func (n *NewsHandler) PostNewsV1(ctx *gin.Context) {
 	}
 	img, err := ctx.FormFile("image")
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "file is a required",
-		})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "file is required"})
 		return
 	}
 	if img.Size > 5<<20 {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "file is over size(1 byte)",
+			"error": "file exceeds the 5 MB limit",
 		})
 		return
 	}
 
-	//have permission
-	err = os.MkdirAll("./uploads", os.ModePerm)
-
-	if err != nil {
+	if err := os.MkdirAll("./uploads", os.ModePerm); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Can not create folder!"})
 		return
 	}
@@ -52,19 +46,20 @@ func (n *NewsHandler) PostNewsV1(ctx *gin.Context) {
 
 	if err := ctx.SaveUploadedFile(img, dst); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Can not save file"})
+		return
 	}
 
 	ctx.JSON(http.StatusAccepted, gin.H{
-		"name":   input.Title,
-		"Status": input.Status,
+		"name":   request.Title,
+		"status": request.Status,
 		"img":    img.Filename,
 		"path":   dst,
 	})
 }
 
-func (n *NewsHandler) PostUploadFileNewsV1(ctx *gin.Context) {
-	var input dto.PostNewsV1
-	if err := ctx.ShouldBind(&input); err != nil {
+func (h *NewsHandler) UploadNewsImage(ctx *gin.Context) {
+	var request dto.NewsFormRequest
+	if err := ctx.ShouldBind(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": utils.HandleValidatorErrors(err),
 		})
@@ -87,17 +82,17 @@ func (n *NewsHandler) PostUploadFileNewsV1(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusAccepted, gin.H{
-		"name":   input.Title,
-		"Status": input.Status,
+		"name":   request.Title,
+		"status": request.Status,
 		"img":    imageName,
 	})
 }
 
-func (n *NewsHandler) UploadMultipleFile(ctx *gin.Context) {
+func (h *NewsHandler) UploadMultipleFiles(ctx *gin.Context) {
 	const publicUrl = "http://localhost:8085/images/"
 
-	var input dto.PostNewsV1
-	if err := ctx.ShouldBind(&input); err != nil {
+	var request dto.NewsFormRequest
+	if err := ctx.ShouldBind(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
@@ -141,8 +136,8 @@ func (n *NewsHandler) UploadMultipleFile(ctx *gin.Context) {
 
 	resp := gin.H{
 		"message":    "New file upload",
-		"title":      input.Title,
-		"status":     input.Status,
+		"title":      request.Title,
+		"status":     request.Status,
 		"image_name": successFile,
 	}
 

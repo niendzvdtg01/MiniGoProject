@@ -17,16 +17,15 @@ func HandleValidatorErrors(err error) gin.H {
 		errors := make(map[string]string)
 		for _, e := range validationError {
 			log.Printf("%s", e.Namespace())
-			//split each attribute
 			root := strings.Split(e.Namespace(), ".")[0]
 
 			rawPath := strings.TrimPrefix(e.Namespace(), root+".")
 
 			parts := strings.Split(rawPath, ".")
 			for i, part := range parts {
-				if strings.Contains("part", "[") {
+				if strings.Contains(part, "[") {
 					idx := strings.Index(part, "[")
-					base := camelToSnake(part[:idx]) // 0 den truoc dau vuong [
+					base := camelToSnake(part[:idx])
 					index := part[idx:]
 					parts[i] = base + index
 				} else {
@@ -61,9 +60,9 @@ func HandleValidatorErrors(err error) gin.H {
 			case "search":
 				errors[fieldPath] = fieldPath + " contains invalid characters"
 			case "max_int":
-				errors[fieldPath] = fmt.Sprintf("%s must be smaller than: %s", fieldPath, e.Tag())
+				errors[fieldPath] = fmt.Sprintf("%s must be smaller than: %s", fieldPath, e.Param())
 			case "min_int":
-				errors[fieldPath] = fmt.Sprintf("%s must be bigger than: %s", fieldPath, e.Tag())
+				errors[fieldPath] = fmt.Sprintf("%s must be bigger than: %s", fieldPath, e.Param())
 			case "file_extension":
 				allowedValues := strings.Join(strings.Split(e.Param(), " "), ",")
 				errors[fieldPath] = fmt.Sprintf("%s only accept the file have extension %s", fieldPath, allowedValues)
@@ -72,7 +71,7 @@ func HandleValidatorErrors(err error) gin.H {
 		}
 		return gin.H{"error": errors}
 	}
-	return gin.H{"error": "Invalid request: " + err.Error()}
+	return gin.H{"error": "invalid request: " + err.Error()}
 }
 
 func RegisterValidation() error {

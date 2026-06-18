@@ -1,7 +1,7 @@
 package service
 
 import (
-	"Backend/internal/model"
+	"backend/internal/model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,6 +27,7 @@ func (s *AuthService) Login(ctx *gin.Context, email string, password string) (*m
 	if err != nil {
 		return nil, err
 	}
+	_ = password
 	return user, nil
 }
 

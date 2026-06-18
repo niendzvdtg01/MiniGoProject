@@ -1,6 +1,6 @@
 package dto
 
-type PostProduct struct {
+type CreateProductRequest struct {
 	Name             string                 `json:"product_name" binding:"required,min=3,max=100"`
 	ProductImage     ProductImage           `json:"product_image" binding:"required"`
 	Display          bool                   `json:"display"`
@@ -10,7 +10,7 @@ type PostProduct struct {
 	ProductMetaData  map[string]any         `json:"product_metadata" binding:"omitempty"`
 }
 
-type ProductRequest struct {
+type ProductFormRequest struct {
 	ProductName string `form:"product_name" binding:"required,max=30,min=3"`
 	Price       int    `form:"price" binding:"required,min_int=1,max_int=1000000"`
 	BestSaling  bool   `form:"best_saling" binding:"required"`

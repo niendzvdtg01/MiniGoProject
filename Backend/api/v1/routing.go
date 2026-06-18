@@ -1,52 +1,49 @@
 package api
 
 import (
-	"Backend/internal/handler"
-	"Backend/internal/middlewares"
-	"Backend/internal/service"
+	"backend/internal/handler"
+	"backend/internal/middlewares"
+	"backend/internal/service"
 
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter(productService *service.ProductService) *gin.Engine {
-	server := gin.Default()
-	//define user handler
-
+	router := gin.Default()
 	userHandler := handler.NewUserHandler()
-	//product handler
 	productHandler := handler.NewProductHandler(productService)
 	categoryHandler := handler.NewCategoryHandler()
 	newsHandler := handler.NewNewsHandler()
 	messageHandler := handler.NewMessageHandler()
-	server.Use(middlewares.LoggerMiddleware())
-	serverRouting := server.Group("/api")
+	router.Use(middlewares.LoggerMiddleware())
+	apiGroup := router.Group("/api")
 	{
-		userApi := serverRouting.Group("/user").Use(middlewares.RatelimitingMiddleware())
+		userGroup := apiGroup.Group("/user").Use(middlewares.RateLimitingMiddleware())
 		{
-			userApi.GET("/:id", middlewares.ApiKeyMiddleware(), userHandler.GetUserByID)
-			userApi.POST("/info", userHandler.GetUserByName)
+			userGroup.GET("/:id", middlewares.ApiKeyMiddleware(), userHandler.GetUserByID)
+			userGroup.POST("/info", userHandler.GetUserByUsername)
 		}
-		productAPI := serverRouting.Group("/product").Use(middlewares.LoggerMiddleware())
+		productGroup := apiGroup.Group("/product").Use(middlewares.LoggerMiddleware())
 		{
-			productAPI.POST("/all", productHandler.PostProducts)
-			productAPI.POST("/product_info", productHandler.PostProductRequest)
+			productGroup.POST("/all", productHandler.CreateProduct)
+			productGroup.POST("/product_info", productHandler.CreateProductFromForm)
 		}
-		categoryAPI := serverRouting.Group("/category").Use(middlewares.ApiKeyMiddleware())
+		categoryGroup := apiGroup.Group("/category").Use(middlewares.ApiKeyMiddleware())
 		{
-			categoryAPI.POST("", categoryHandler.PostCategoryHandler)
+			categoryGroup.POST("", categoryHandler.CreateCategory)
 		}
-		newsAPI := serverRouting.Group("/news")
+		newsGroup := apiGroup.Group("/news")
 		{
-			newsAPI.POST("", newsHandler.PostNewsV1)
-			newsAPI.POST("/image", newsHandler.PostUploadFileNewsV1)
-			newsAPI.POST("/upload-multiple-file", newsHandler.UploadMultipleFile)
+			newsGroup.POST("", newsHandler.CreateNews)
+			newsGroup.POST("/image", newsHandler.UploadNewsImage)
+			newsGroup.POST("/upload-multiple-file", newsHandler.UploadMultipleFiles)
 		}
-		messageAPI := serverRouting.Group("/message")
+		messageGroup := apiGroup.Group("/message")
 		{
-			messageAPI.POST("/post_message", messageHandler.PostMessgaeV1)
+			messageGroup.POST("/post_message", messageHandler.PostMessage)
 		}
 	}
 
-	server.StaticFS("/images", gin.Dir("./form-file", false))
-	return server
+	router.StaticFS("/images", gin.Dir("./form-file", false))
+	return router
 }

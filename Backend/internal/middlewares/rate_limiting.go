@@ -28,7 +28,7 @@ func getClientIP(ctx *gin.Context) string {
 	return ip
 }
 
-func getRatelimiter(ip string) *rate.Limiter {
+func getRateLimiter(ip string) *rate.Limiter {
 	mu.Lock()
 	defer mu.Unlock()
 	client, exists := clients[ip]
@@ -57,12 +57,12 @@ func CleanupClients() {
 }
 
 // ab -n 20 - c 1 http://localhost:8085/api/user/1
-func RatelimitingMiddleware() gin.HandlerFunc {
+func RateLimitingMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		ip := getClientIP(ctx)
 		log.Println(ip) //::1 == 127.0.0.1
 
-		limiter := getRatelimiter(ip)
+		limiter := getRateLimiter(ip)
 
 		if !limiter.Allow() {
 			ctx.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{

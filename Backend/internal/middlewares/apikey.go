@@ -16,14 +16,14 @@ func ApiKeyMiddleware() gin.HandlerFunc {
 	}
 
 	return func(ctx *gin.Context) {
-		apikey := ctx.GetHeader("x-api-key")
-		log.Println("x-api-key", apikey)
-		if apikey == "" {
+		apiKey := ctx.GetHeader("x-api-key")
+		log.Println("x-api-key", apiKey)
+		if apiKey == "" {
 			ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{"error": "missing api key"})
 			return
 		}
 
-		if apikey != expectedKey {
+		if apiKey != expectedKey {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error":        "invalid api-key",
 				"expected-key": expectedKey,

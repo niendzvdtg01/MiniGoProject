@@ -1,7 +1,7 @@
 package service
 
 import (
-	"Backend/pkg/dto"
+	"backend/pkg/dto"
 
 	"github.com/google/uuid"
 )
@@ -13,8 +13,7 @@ func NewProductService() *ProductService {
 	return &ProductService{}
 }
 
-// lol
-func (ps *ProductService) ValidateUUID(product dto.PostProduct) error {
+func (s *ProductService) ValidateProductInfoKeys(product dto.CreateProductRequest) error {
 	for key := range product.ProductInfo {
 		if _, err := uuid.Parse(key); err != nil {
 			return err

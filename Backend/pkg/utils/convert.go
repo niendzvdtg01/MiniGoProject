@@ -11,7 +11,7 @@ var (
 )
 
 func camelToSnake(str string) string {
-	snake := matchAllcap.ReplaceAllString(str, "${1}_${2}")
-	snake = matchAllcap.ReplaceAllString(str, "${1}_${2}")
+	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
+	snake = matchAllcap.ReplaceAllString(snake, "${1}_${2}")
 	return strings.ToLower(snake)
 }

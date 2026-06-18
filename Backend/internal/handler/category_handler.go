@@ -1,24 +1,23 @@
 package handler
 
 import (
-	"Backend/pkg/dto"
-	"Backend/pkg/utils"
+	"backend/pkg/dto"
+	"backend/pkg/utils"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-type CategoryHandler struct {
-}
+type CategoryHandler struct{}
 
 func NewCategoryHandler() *CategoryHandler {
 	return &CategoryHandler{}
 }
 
-func (c *CategoryHandler) PostCategoryHandler(ctx *gin.Context) {
-	var input dto.PostCategoryParam
-	if err := ctx.ShouldBindQuery(&input); err != nil {
+func (h *CategoryHandler) CreateCategory(ctx *gin.Context) {
+	var request dto.CategoryRequest
+	if err := ctx.ShouldBindQuery(&request); err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": utils.HandleValidatorErrors(err),
@@ -29,15 +28,14 @@ func (c *CategoryHandler) PostCategoryHandler(ctx *gin.Context) {
 	value, exists := ctx.Get("username")
 
 	if !exists {
-		log.Println(value)
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"message": "invalide username",
+			"message": "invalid username",
 		})
 		return
 	}
 	ctx.JSON(http.StatusAccepted, gin.H{
-		"name":     input.Name,
-		"Status":   input.Status,
+		"name":     request.Name,
+		"status":   request.Status,
 		"username": value,
 	})
 

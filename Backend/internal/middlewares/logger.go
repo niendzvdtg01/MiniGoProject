@@ -39,13 +39,12 @@ func LoggerMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		start := time.Now()
 
-		contentTye := ctx.GetHeader("Content-Type")
-		//
+		contentType := ctx.GetHeader("Content-Type")
 		requestBody := make(map[string]any)
 
 		var formfiles []map[string]any
 
-		if strings.HasPrefix(contentTye, "multipart/form-data") {
+		if strings.HasPrefix(contentType, "multipart/form-data") {
 			log.Println("multipart/form-data")
 
 			if err := ctx.Request.ParseMultipartForm(32 << 20); err == nil && ctx.Request.MultipartForm != nil {
@@ -62,8 +61,8 @@ func LoggerMiddleware() gin.HandlerFunc {
 						formfiles = append(formfiles, map[string]any{
 							"field":        field,
 							"filename":     f.Filename,
-							"size":         formatfileSize(f.Size),
-							"content_type": f.Header.Get("COntent-type"),
+							"size":         formatFileSize(f.Size),
+							"content_type": f.Header.Get("Content-Type"),
 						})
 					}
 				}
@@ -80,12 +79,10 @@ func LoggerMiddleware() gin.HandlerFunc {
 
 			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 
-			if strings.HasPrefix(contentTye, "application/json") {
+			if strings.HasPrefix(contentType, "application/json") {
 				_ = json.Unmarshal(bodyBytes, &requestBody)
 			} else {
-				//
 				values, _ := url.ParseQuery(string(bodyBytes))
-				log.Println(values)
 				for key, vals := range values {
 					if len(vals) == 1 {
 						requestBody[key] = vals[0]
@@ -110,22 +107,18 @@ func LoggerMiddleware() gin.HandlerFunc {
 		logEvent := logger.Info()
 
 		statusCode := ctx.Writer.Status()
-		//
 		responseContentType := ctx.Writer.Header().Get("Content-Type")
-		//
 		responseBodyRaw := customWriter.body.String()
 
-		var responseBodyParsed interface{}
+		var responseBodyParsed any = responseBodyRaw
 		if strings.HasPrefix(responseContentType, "image/") {
 			responseBodyParsed = "[BINARY DATA]"
-		} else if strings.HasPrefix(contentTye, "application/json") ||
+		} else if strings.HasPrefix(contentType, "application/json") ||
 			strings.HasPrefix(strings.TrimSpace(responseBodyRaw), "{") ||
 			strings.HasPrefix(strings.TrimSpace(responseBodyRaw), "[") {
-			if err := json.Unmarshal([]byte(responseBodyRaw), responseBodyParsed); err != nil {
+			if err := json.Unmarshal([]byte(responseBodyRaw), &responseBodyParsed); err != nil {
 				responseBodyParsed = responseBodyRaw
 			}
-		} else {
-			responseBodyParsed = responseBodyRaw
 		}
 
 		if statusCode >= 500 {
@@ -149,15 +142,15 @@ func LoggerMiddleware() gin.HandlerFunc {
 			Int("status_code", statusCode).
 			Interface("response_body", responseBodyParsed).
 			Interface("body", requestBody).
-			Int64("status_code", duration.Microseconds()).Msg("HTTP Request Log")
+			Int64("duration_us", duration.Microseconds()).Msg("HTTP Request Log")
 	}
 }
 
-func formatfileSize(size int64) string {
+func formatFileSize(size int64) string {
 	switch {
 	case size >= 1<<20:
 		return fmt.Sprintf("%.2f MB", float64(size)/(1<<20))
-	case size <= 1<<20:
+	case size >= 1<<10:
 		return fmt.Sprintf("%.2f KB", float64(size)/(1<<10))
 	default:
 		return fmt.Sprintf("%d B", size)
