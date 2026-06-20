@@ -2,36 +2,34 @@ package handler
 
 import (
 	"backend/internal/service"
-	"backend/pkg/dto"
-	"net/http"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
 
 type UserHandler struct {
-	userService *service.UserService
+	userService service.UserService
 }
 
-func NewUserHandler(userService *service.UserService) *UserHandler {
+func NewUserHandler(userService service.UserService) *UserHandler {
 	return &UserHandler{userService: userService}
 }
-func (h *UserHandler) GetUserByID(ctx *gin.Context) {
-	id := ctx.Param("id")
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": "Get user by id",
-		"id":      id,
-	})
+
+//Basic CRUD api
+
+func (u *UserHandler) GetAllUser(ctx *gin.Context) {
+	u.userService.CreateUser()
+	log.Println("dcmmm")
 }
+func (u *UserHandler) GetUserByUUID(ctx *gin.Context) {
 
-func (h *UserHandler) GetUserByUsername(ctx *gin.Context) {
-	var request dto.UserRequest
-	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+}
+func (u *UserHandler) CreateUser(ctx *gin.Context) {
 
-	ctx.JSON(http.StatusAccepted, gin.H{
-		"username": request.UserName,
-		"password": request.Password,
-	})
+}
+func (u *UserHandler) UpdateUser(ctx *gin.Context) {
+
+}
+func (u *UserHandler) DeleteUser(ctx *gin.Context) {
+
 }
