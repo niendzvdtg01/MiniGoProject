@@ -18,7 +18,7 @@ func NewUserHandler(userService service.UserService) *UserHandler {
 //Basic CRUD api
 
 func (u *UserHandler) GetAllUser(ctx *gin.Context) {
-	u.userService.CreateUser()
+	u.userService.FindAll()
 	log.Println("dcmmm")
 }
 func (u *UserHandler) GetUserByUUID(ctx *gin.Context) {

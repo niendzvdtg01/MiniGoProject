@@ -9,14 +9,14 @@ type InMemoryUserRepository struct {
 	user []model.User
 }
 
-func NewUserRepository() *InMemoryUserRepository {
+func NewUserRepository() UserRepository {
 	return &InMemoryUserRepository{
 		user: make([]model.User, 0),
 	}
 }
 
-func (ir *InMemoryUserRepository) FindAll() {
-	log.Println("Get all users into user service")
+func (ir *InMemoryUserRepository) FindAllUser() {
+	log.Println("Get all users into user repo")
 }
 func (ir *InMemoryUserRepository) CreateUser() {
 	log.Println("Get all users into user service")

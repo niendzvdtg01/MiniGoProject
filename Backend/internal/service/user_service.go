@@ -6,16 +6,16 @@ import (
 )
 
 type userService struct {
-	repo *repository.InMemoryUserRepository
+	repo repository.UserRepository
 }
 
-func NewUserService(repo *repository.InMemoryUserRepository) *userService {
+func NewUserService(repo repository.UserRepository) UserService {
 	return &userService{repo: repo}
 }
 
 func (us *userService) FindAll() {
-	us.repo.FindAll()
-	log.Println("Get all users into user service")
+	us.repo.FindAllUser()
+	log.Println("Get all users into user repository")
 }
 func (us *userService) CreateUser() {
 	log.Println("Get all users into user service")
