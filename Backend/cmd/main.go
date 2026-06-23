@@ -17,9 +17,7 @@ func main() {
 
 	go middlewares.CleanupClients()
 
-	if err := utils.RegisterValidation(); err != nil {
-		panic(err)
-	}
+	utils.InitValidation()
 	//Init config
 	cfg := config.NewConfig()
 	//Init application

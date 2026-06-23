@@ -11,7 +11,7 @@ type Routing interface {
 }
 
 func RegisterRoutes(r *gin.Engine, routes ...Routing) {
-	r.Use(middlewares.AuthMiddleware())
+	r.Use(middlewares.LoggerMiddleware(), middlewares.AuthMiddleware())
 	api := r.Group("/api/v1")
 
 	for _, route := range routes {
