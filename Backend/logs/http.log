@@ -1,16 +1,16 @@
 {
-  "level": "error",
+  "level": "info",
   "method": "POST",
-  "path": "/api/category",
-  "query": "name=Nien&status=1",
+  "path": "/api/v1/user/550e8400-e29b-41d4-a716-446655440000",
+  "query": "",
   "ip": "::1",
   "user_agent": "PostmanRuntime/7.54.0",
   "referer": "",
   "protocol": "HTTP/1.1",
   "host": "localhost:8085",
-  "remote_addr": "[::1]:46256",
-  "request_uri": "/api/category?name=Nien&status=1",
-  "content_length": 0,
+  "remote_addr": "[::1]:50396",
+  "request_uri": "/api/v1/user/550e8400-e29b-41d4-a716-446655440000",
+  "content_length": 186,
   "header": {
     "Accept": [
       "*/*"
@@ -22,10 +22,13 @@
       "keep-alive"
     ],
     "Content-Length": [
-      "0"
+      "186"
+    ],
+    "Content-Type": [
+      "application/json"
     ],
     "Postman-Token": [
-      "c90c89e0-ec71-4961-ac01-43708d518831"
+      "d800a708-2c20-4405-86af-f3bd9c808d07"
     ],
     "User-Agent": [
       "PostmanRuntime/7.54.0"
@@ -34,10 +37,29 @@
       "1245"
     ]
   },
-  "status_code": 500,
-  "response_body": "{\"message\":\"invalide username\"}",
-  "body": {},
-  "status_code": 457,
-  "time": "2026-06-15T23:04:55+07:00",
+  "status_code": 202,
+  "response_body": {
+    "data": {
+      "age": 22,
+      "email": "nguyenvana@example.com",
+      "level": 2,
+      "name": "Nguyen Van A",
+      "password": "Password123",
+      "status": 1,
+      "uuid": "550e8400-e29b-41d4-a716-446655440000"
+    },
+    "message": "Succesful"
+  },
+  "body": {
+    "age": 22,
+    "email": "nguyenvana@example.com",
+    "level": 2,
+    "name": "Nguyen Van A",
+    "password": "Password123",
+    "status": 1,
+    "uuid": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  "duration_us": 92,
+  "time": "2026-06-24T22:47:28+07:00",
   "message": "HTTP Request Log"
 }

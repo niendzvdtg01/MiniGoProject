@@ -17,7 +17,9 @@ func main() {
 
 	go middlewares.CleanupClients()
 
-	utils.InitValidation()
+	if err := utils.InitValidation(); err != nil {
+		log.Fatalf("Validator init fail!: %v", err)
+	}
 	//Init config
 	cfg := config.NewConfig()
 	//Init application

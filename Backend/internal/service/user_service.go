@@ -1,7 +1,9 @@
 package service
 
 import (
+	"backend/internal/model"
 	"backend/internal/repository"
+	"backend/pkg/utils"
 	"log"
 )
 
@@ -17,7 +19,8 @@ func (us *userService) FindAll() {
 	us.repo.FindAllUser()
 	log.Println("Get all users into user repository")
 }
-func (us *userService) CreateUser() {
+func (us *userService) CreateUser(user model.User) {
+	user.Email = utils.NormalizeString(user.Email)
 	log.Println("Get all users into user service")
 }
 func (us *userService) FindByUUID() {
