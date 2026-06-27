@@ -18,8 +18,8 @@ func NewUserRepository() UserRepository {
 func (ir *InMemoryUserRepository) FindAllUser() {
 	log.Println("Get all users into user repo")
 }
-func (ir *InMemoryUserRepository) CreateUser() {
-	log.Println("Get all users into user service")
+func (ir *InMemoryUserRepository) CreateUser(user model.User) {
+	ir.user = append(ir.user, user)
 }
 func (ir *InMemoryUserRepository) FindByUUID() {
 	log.Println("Get all users into user service")
@@ -29,4 +29,13 @@ func (ir *InMemoryUserRepository) UpdateUser() {
 }
 func (ir *InMemoryUserRepository) DeleteUser() {
 	log.Println("Get all users into user service")
+}
+
+func (ir *InMemoryUserRepository) FindByEmail(email string) (model.User, bool) {
+	for _, user := range ir.user {
+		if user.Email == email {
+			return user, true
+		}
+	}
+	return model.User{}, false
 }
