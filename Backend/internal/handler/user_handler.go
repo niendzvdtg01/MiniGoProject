@@ -4,6 +4,7 @@ import (
 	"backend/internal/model"
 	"backend/internal/service"
 	"backend/pkg/utils"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -28,15 +29,18 @@ func (u *UserHandler) GetUserByUUID(ctx *gin.Context) {
 func (u *UserHandler) CreateUser(ctx *gin.Context) {
 	var user model.User
 	if err := ctx.ShouldBindJSON(&user); err != nil {
+		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, utils.HandleValidatorErrors(err))
 		return
 	}
-	u.userService.CreateUser(user)
-	ctx.JSON(http.StatusAccepted, gin.H{
-		"message": "Succesful",
-		"data":    user,
-	})
 
+	createUser, err := u.userService.CreateUser(user)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	utils.ReponseSuccses(ctx, http.StatusCreated, createUser)
 }
 func (u *UserHandler) UpdateUser(ctx *gin.Context) {
 

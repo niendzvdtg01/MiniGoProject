@@ -25,6 +25,7 @@ func (us *userService) FindAll() {
 func (us *userService) CreateUser(user model.User) (model.User, error) {
 	user.Email = utils.NormalizeString(user.Email)
 	if _, exists := us.repo.FindByEmail(user.Email); exists {
+		log.Println(exists)
 		return model.User{}, utils.NewError("email already exists", utils.ErrCodeConflict)
 	}
 

@@ -33,6 +33,9 @@ func (ir *InMemoryUserRepository) DeleteUser() {
 
 func (ir *InMemoryUserRepository) FindByEmail(email string) (model.User, bool) {
 	for _, user := range ir.user {
+		log.Println(email)
+		log.Println(ir.user)
+		log.Println(len(ir.user))
 		if user.Email == email {
 			return user, true
 		}
