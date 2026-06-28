@@ -3,6 +3,7 @@ package handler
 import (
 	"backend/internal/model"
 	"backend/internal/service"
+	"backend/pkg/dto"
 	"backend/pkg/utils"
 	"log"
 	"net/http"
@@ -39,8 +40,8 @@ func (u *UserHandler) CreateUser(ctx *gin.Context) {
 		utils.ResponseError(ctx, err)
 		return
 	}
-
-	utils.ReponseSuccses(ctx, http.StatusCreated, createUser)
+	userRequest := dto.MapUserToDTO(createUser)
+	utils.ReponseSuccses(ctx, http.StatusCreated, &userRequest)
 }
 func (u *UserHandler) UpdateUser(ctx *gin.Context) {
 

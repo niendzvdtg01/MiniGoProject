@@ -3,7 +3,7 @@ package model
 type User struct {
 	UUID     string `json:"uuid"`
 	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
+	Email    string `json:"email" binding:"required,email,email_advance"`
 	Age      int    `json:"age" binding:"required,gt=0"`
 	Password string `json:"password" binding:"required,min=8"`
 	Status   int    `json:"status" binding:"required,oneof=1 2"`

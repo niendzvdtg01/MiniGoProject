@@ -65,6 +65,8 @@ func HandleValidatorErrors(err error) gin.H {
 			case "file_extension":
 				allowedValues := strings.Join(strings.Split(e.Param(), " "), ",")
 				errors[fieldPath] = fmt.Sprintf("%s only accept the file have extension %s", fieldPath, allowedValues)
+			case "email_advance":
+				errors[fieldPath] = fmt.Sprintf("email stay in banned list:%s", fieldPath)
 			}
 
 		}
@@ -74,6 +76,25 @@ func HandleValidatorErrors(err error) gin.H {
 }
 
 func RegisterValidation(v *validator.Validate) error {
+
+	var blockDomains = map[string]bool{
+		"blacklist.com": true,
+		"edu.vn":        true,
+		"abc.com":       true,
+	}
+
+	v.RegisterValidation("email_advance", func(fl validator.FieldLevel) bool {
+		email := fl.Field().String()
+
+		parts := strings.Split(email, "@")
+		if len(parts) != 2 {
+			return false
+		}
+
+		domain := NormalizeString(parts[1])
+		return !blockDomains[domain]
+
+	})
 
 	v.RegisterValidation("min_int", func(fl validator.FieldLevel) bool {
 		minStr := fl.Param()

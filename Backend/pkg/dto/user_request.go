@@ -1,11 +1,45 @@
 package dto
 
+import "backend/internal/model"
+
 type UserRequest struct {
 	UUID     string `json:"uuid"`
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
-	Age      int    `json:"age" binding:"required,gt=0"`
-	Password string `json:"password" binding:"required,min=8"`
-	Status   int    `json:"status" binding:"required,oneof=1 2"`
-	Level    int    `json:"level" binding:"required,oneof=1 2"`
+	FullName string `json:"name" `
+	Email    string `json:"email"`
+	Age      int    `json:"age"`
+	Status   string `json:"status"`
+	Level    string `json:"level"`
+}
+
+func MapUserToDTO(user model.User) *UserRequest {
+	return &UserRequest{
+		UUID:     user.UUID,
+		FullName: user.Name,
+		Email:    user.Email,
+		Age:      user.Age,
+		Status:   mapStatusTest(user.Status),
+		Level:    mapLevelTest(user.Level),
+	}
+}
+
+func mapStatusTest(status int) string {
+	switch status {
+	case 1:
+		return "Show"
+	case 2:
+		return "Hide"
+	default:
+		return "None"
+	}
+}
+
+func mapLevelTest(level int) string {
+	switch level {
+	case 1:
+		return "Admin"
+	case 2:
+		return "Member"
+	default:
+		return "None"
+	}
 }
