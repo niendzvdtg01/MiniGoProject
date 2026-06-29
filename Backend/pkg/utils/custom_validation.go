@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -67,6 +68,8 @@ func HandleValidatorErrors(err error) gin.H {
 				errors[fieldPath] = fmt.Sprintf("%s only accept the file have extension %s", fieldPath, allowedValues)
 			case "email_advance":
 				errors[fieldPath] = fmt.Sprintf("email stay in banned list:%s", fieldPath)
+			case "password_strong":
+				errors[fieldPath] = fmt.Sprintf("password must have valide format:%s", fieldPath)
 			}
 
 		}
@@ -94,6 +97,22 @@ func RegisterValidation(v *validator.Validate) error {
 		domain := NormalizeString(parts[1])
 		return !blockDomains[domain]
 
+	})
+
+	//password validation
+	v.RegisterValidation("password_strong", func(fl validator.FieldLevel) bool {
+		password := fl.Field().String()
+
+		if len(password) < 8 {
+			return false
+		}
+
+		hasLower := regexp.MustCompile(`[a-z]`).MatchString(password)
+		hasUpper := regexp.MustCompile(`[A-Z]`).MatchString(password)
+		hasDigit := regexp.MustCompile(`[0-9]`).MatchString(password)
+		hasSpeChar := regexp.MustCompile(`[!@#$%^&*(),.?":{}|<>_\-+=\\[\]/~]`).MatchString(password)
+
+		return hasLower && hasUpper && hasDigit && hasSpeChar
 	})
 
 	v.RegisterValidation("min_int", func(fl validator.FieldLevel) bool {
