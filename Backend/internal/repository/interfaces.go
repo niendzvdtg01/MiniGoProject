@@ -3,7 +3,7 @@ package repository
 import "backend/internal/model"
 
 type UserRepository interface {
-	FindAllUser()
+	FindAllUser() ([]model.User, error)
 	CreateUser(user model.User)
 	FindByUUID()
 	UpdateUser()

@@ -1,6 +1,8 @@
 package dto
 
-import "backend/internal/model"
+import (
+	"backend/internal/model"
+)
 
 type UserRequest struct {
 	UUID     string `json:"uuid"`
@@ -20,6 +22,22 @@ func MapUserToDTO(user model.User) *UserRequest {
 		Status:   mapStatusTest(user.Status),
 		Level:    mapLevelTest(user.Level),
 	}
+}
+
+func MapUserToDTOs(users []model.User) []UserRequest {
+	dtos := make([]UserRequest, len(users))
+	for _, user := range users {
+		dto := UserRequest{
+			UUID:     user.UUID,
+			FullName: user.Name,
+			Email:    user.Email,
+			Age:      user.Age,
+			Status:   mapStatusTest(user.Status),
+			Level:    mapLevelTest(user.Level),
+		}
+		dtos = append(dtos, dto)
+	}
+	return dtos
 }
 
 func mapStatusTest(status int) string {

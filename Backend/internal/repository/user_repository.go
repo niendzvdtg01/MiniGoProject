@@ -15,8 +15,8 @@ func NewUserRepository() UserRepository {
 	}
 }
 
-func (ir *InMemoryUserRepository) FindAllUser() {
-	log.Println("Get all users into user repo")
+func (ir *InMemoryUserRepository) FindAllUser() ([]model.User, error) {
+	return ir.user, nil
 }
 func (ir *InMemoryUserRepository) CreateUser(user model.User) {
 	ir.user = append(ir.user, user)

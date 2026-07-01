@@ -18,9 +18,13 @@ func NewUserService(repo repository.UserRepository) UserService {
 	return &userService{repo: repo}
 }
 
-func (us *userService) FindAll() {
-	us.repo.FindAllUser()
+func (us *userService) FindAll() ([]model.User, error) {
+	user, err := us.repo.FindAllUser()
+	if err != nil {
+		return nil, utils.WrapError("failed to fetch user", utils.ErrCodeInternal, err)
+	}
 	log.Println("Get all users into user repository")
+	return user, nil
 }
 func (us *userService) CreateUser(user model.User) (model.User, error) {
 	user.Email = utils.NormalizeString(user.Email)

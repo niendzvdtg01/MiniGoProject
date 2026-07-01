@@ -22,7 +22,12 @@ func NewUserHandler(userService service.UserService) *UserHandler {
 //Basic CRUD api
 
 func (u *UserHandler) GetAllUser(ctx *gin.Context) {
-
+	user, err := u.userService.FindAll()
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.HandleValidatorErrors(err))
+		return
+	}
+	utils.ReponseSuccses(ctx, http.StatusAccepted, dto.MapUserToDTOs(user))
 }
 func (u *UserHandler) GetUserByUUID(ctx *gin.Context) {
 
