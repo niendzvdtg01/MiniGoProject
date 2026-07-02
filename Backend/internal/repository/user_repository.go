@@ -21,8 +21,15 @@ func (ir *InMemoryUserRepository) FindAllUser() ([]model.User, error) {
 func (ir *InMemoryUserRepository) CreateUser(user model.User) {
 	ir.user = append(ir.user, user)
 }
-func (ir *InMemoryUserRepository) FindByUUID() {
-	log.Println("Get all users into user service")
+func (ir *InMemoryUserRepository) FindByUUID(uuid string) (model.User, error) {
+	for _, user := range ir.user {
+
+		log.Println(len(ir.user))
+		if user.UUID == uuid {
+			return user, nil
+		}
+	}
+	return model.User{}, nil
 }
 func (ir *InMemoryUserRepository) UpdateUser() {
 	log.Println("Get all users into user service")

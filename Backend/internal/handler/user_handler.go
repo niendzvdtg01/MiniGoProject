@@ -15,6 +15,10 @@ type UserHandler struct {
 	userService service.UserService
 }
 
+type GetUserByUUIDParam struct {
+	Uuid string `uri:"uuid" binding:"uuid"`
+}
+
 func NewUserHandler(userService service.UserService) *UserHandler {
 	return &UserHandler{userService: userService}
 }
@@ -30,6 +34,20 @@ func (u *UserHandler) GetAllUser(ctx *gin.Context) {
 	utils.ReponseSuccses(ctx, http.StatusAccepted, dto.MapUserToDTOs(user))
 }
 func (u *UserHandler) GetUserByUUID(ctx *gin.Context) {
+	var params GetUserByUUIDParam
+	if err := ctx.ShouldBindUri(&params); err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	user, err := u.userService.FindByUUID(params.Uuid)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	userDTO := dto.MapUserToDTO(user)
+	utils.ReponseSuccses(ctx, http.StatusOK, userDTO)
 
 }
 func (u *UserHandler) CreateUser(ctx *gin.Context) {
