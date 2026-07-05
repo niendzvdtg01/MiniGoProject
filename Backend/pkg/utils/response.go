@@ -82,3 +82,7 @@ func ReponseSuccses(ctx *gin.Context, status int, data any) {
 		"data":   data,
 	})
 }
+
+func ResponseValidator(ctx *gin.Context, status int, data any) {
+
+}
