@@ -19,6 +19,12 @@ type GetUserByUUIDParam struct {
 	Uuid string `uri:"uuid" binding:"uuid"`
 }
 
+type GetuserParam struct {
+	Search string `form:"search" binding:"omitempty,min=3,max=50"`
+	Page   int    `form:"page" binding:"omitempty,gte=1,lte=100"`
+	Limit  int    `form:"limit" binding:"omitempty,gte=1,lte=100"`
+}
+
 func NewUserHandler(userService service.UserService) *UserHandler {
 	return &UserHandler{userService: userService}
 }
@@ -26,9 +32,26 @@ func NewUserHandler(userService service.UserService) *UserHandler {
 //Basic CRUD api
 
 func (u *UserHandler) GetAllUser(ctx *gin.Context) {
-	user, err := u.userService.FindAll()
+	var params GetuserParam
+
+	if err := ctx.ShouldBindQuery(&params); err != nil {
+		utils.ResponseValidator(ctx, utils.HandleValidatorErrors(err))
+		return
+	}
+
+	if params.Page == 0 {
+		params.Page = 1
+	}
+
+	if params.Limit == 0 {
+		params.Limit = 10
+	}
+
+	log.Println(params)
+
+	user, err := u.userService.FindAll(params.Search, params.Page, params.Limit)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.HandleValidatorErrors(err))
+		utils.ResponseValidator(ctx, utils.HandleValidatorErrors(err))
 		return
 	}
 	utils.ReponseSuccses(ctx, http.StatusAccepted, dto.MapUserToDTOs(user))
@@ -54,7 +77,7 @@ func (u *UserHandler) CreateUser(ctx *gin.Context) {
 	var user model.User
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		log.Println(err)
-		ctx.JSON(http.StatusBadRequest, utils.HandleValidatorErrors(err))
+		utils.ResponseValidator(ctx, utils.HandleValidatorErrors(err))
 		return
 	}
 
