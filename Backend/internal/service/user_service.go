@@ -80,8 +80,20 @@ func (us *userService) FindByUUID(uuid string) (model.User, error) {
 	}
 	return user, nil
 }
-func (us *userService) UpdateUser() {
-	log.Println("Get all users into user service")
+func (us *userService) UpdateUser(uuid string, user model.User) (model.User, error) {
+	user.Email = utils.NormalizeString(user.Email)
+	if _, exists := us.repo.FindByEmail(user.Email); exists {
+		log.Println(exists)
+		return model.User{}, utils.NewError("email already exists", utils.ErrCodeConflict)
+	}
+
+	currentUser, err := us.repo.FindByUUID(uuid)
+
+	if err != nil {
+		return model.User{}, utils.NewError("user not found!!", utils.ErrCodeNotFound)
+	}
+	currentUser.Name = user.Name
+
 }
 func (us *userService) DeleteUser() {
 	log.Println("Get all users into user service")

@@ -90,6 +90,18 @@ func (u *UserHandler) CreateUser(ctx *gin.Context) {
 	utils.ReponseSuccses(ctx, http.StatusCreated, &userRequest)
 }
 func (u *UserHandler) UpdateUser(ctx *gin.Context) {
+	var params GetuserParam
+	if err := ctx.ShouldBindUri(&params); err != nil {
+		utils.ResponseValidator(ctx, utils.HandleValidatorErrors(err))
+		return
+	}
+
+	var user model.User
+	if err := ctx.ShouldBindJSON(&user); err != nil {
+		log.Println(err)
+		utils.ResponseValidator(ctx, utils.HandleValidatorErrors(err))
+		return
+	}
 
 }
 func (u *UserHandler) DeleteUser(ctx *gin.Context) {
