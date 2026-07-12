@@ -2,6 +2,7 @@ package repository
 
 import (
 	"backend/internal/model"
+	"fmt"
 	"log"
 )
 
@@ -31,8 +32,14 @@ func (ir *InMemoryUserRepository) FindByUUID(uuid string) (model.User, error) {
 	}
 	return model.User{}, nil
 }
-func (ir *InMemoryUserRepository) UpdateUser() {
-	log.Println("Get all users into user service")
+func (ir *InMemoryUserRepository) UpdateUser(uuid string, users model.User) error {
+	for i, user := range ir.user {
+		if user.UUID == uuid {
+			ir.user[i] = users
+			return nil
+		}
+	}
+	return fmt.Errorf("Can not find user in memory!")
 }
 func (ir *InMemoryUserRepository) DeleteUser() {
 	log.Println("Get all users into user service")

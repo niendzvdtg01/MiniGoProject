@@ -90,7 +90,7 @@ func (u *UserHandler) CreateUser(ctx *gin.Context) {
 	utils.ReponseSuccses(ctx, http.StatusCreated, &userRequest)
 }
 func (u *UserHandler) UpdateUser(ctx *gin.Context) {
-	var params GetuserParam
+	var params GetUserByUUIDParam
 	if err := ctx.ShouldBindUri(&params); err != nil {
 		utils.ResponseValidator(ctx, utils.HandleValidatorErrors(err))
 		return
@@ -102,6 +102,15 @@ func (u *UserHandler) UpdateUser(ctx *gin.Context) {
 		utils.ResponseValidator(ctx, utils.HandleValidatorErrors(err))
 		return
 	}
+
+	updateUser, err := u.userService.UpdateUser(params.Uuid, user)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	userDTO := dto.MapUserToDTO(updateUser)
+	utils.ReponseSuccses(ctx, http.StatusOK, &userDTO)
 
 }
 func (u *UserHandler) DeleteUser(ctx *gin.Context) {

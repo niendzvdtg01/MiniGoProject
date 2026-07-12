@@ -93,7 +93,16 @@ func (us *userService) UpdateUser(uuid string, user model.User) (model.User, err
 		return model.User{}, utils.NewError("user not found!!", utils.ErrCodeNotFound)
 	}
 	currentUser.Name = user.Name
+	currentUser.Age = user.Age
+	currentUser.Email = user.Email
+	currentUser.Level = user.Level
+	currentUser.Status = user.Status
+	currentUser.Password = user.Password
 
+	if err := us.repo.UpdateUser(uuid, user); err != nil {
+		return model.User{}, utils.NewError("Can not update user", utils.ErrCodeInternal)
+	}
+	return currentUser, nil
 }
 func (us *userService) DeleteUser() {
 	log.Println("Get all users into user service")
