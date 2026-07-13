@@ -97,7 +97,15 @@ func (us *userService) UpdateUser(uuid string, user model.User) (model.User, err
 	currentUser.Email = user.Email
 	currentUser.Level = user.Level
 	currentUser.Status = user.Status
-	currentUser.Password = user.Password
+	// currentUser.Password = user.Password error
+
+	if currentUser.Password != "" {
+		passwordHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return model.User{}, utils.WrapError("Can not hash password!!!", utils.ErrCodeInternal, err)
+		}
+		currentUser.Password = string(passwordHash)
+	}
 
 	if err := us.repo.UpdateUser(uuid, user); err != nil {
 		return model.User{}, utils.NewError("Can not update user", utils.ErrCodeInternal)
