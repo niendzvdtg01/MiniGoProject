@@ -54,7 +54,9 @@ func (u *UserHandler) GetAllUser(ctx *gin.Context) {
 		utils.ResponseValidator(ctx, utils.HandleValidatorErrors(err))
 		return
 	}
-	utils.ReponseSuccses(ctx, http.StatusAccepted, dto.MapUserToDTOs(user))
+	userDto := dto.MapUserToDTOs(user)
+	log.Println(userDto)
+	utils.ReponseSuccses(ctx, http.StatusAccepted, userDto)
 }
 func (u *UserHandler) GetUserByUUID(ctx *gin.Context) {
 	var params GetUserByUUIDParam

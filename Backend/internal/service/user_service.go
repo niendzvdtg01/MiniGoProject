@@ -70,7 +70,9 @@ func (us *userService) CreateUser(user model.User) (model.User, error) {
 	//
 	user.Password = string(passwordHash)
 
-	us.repo.CreateUser(user)
+	if err := us.repo.CreateUser(user); err != nil {
+		return model.User{}, utils.NewError("cannot create user !", utils.ErrCodeBadRequest)
+	}
 	return user, nil
 }
 func (us *userService) FindByUUID(uuid string) (model.User, error) {
