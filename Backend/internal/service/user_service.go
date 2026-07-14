@@ -84,7 +84,7 @@ func (us *userService) FindByUUID(uuid string) (model.User, error) {
 }
 func (us *userService) UpdateUser(uuid string, user model.User) (model.User, error) {
 	user.Email = utils.NormalizeString(user.Email)
-	if _, exists := us.repo.FindByEmail(user.Email); exists {
+	if u, exists := us.repo.FindByEmail(user.Email); exists && u.UUID != uuid {
 		log.Println(exists)
 		return model.User{}, utils.NewError("email already exists", utils.ErrCodeConflict)
 	}
