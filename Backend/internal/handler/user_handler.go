@@ -76,14 +76,14 @@ func (u *UserHandler) GetUserByUUID(ctx *gin.Context) {
 
 }
 func (u *UserHandler) CreateUser(ctx *gin.Context) {
-	var user model.User
-	if err := ctx.ShouldBindJSON(&user); err != nil {
+	var input dto.CreateUserInput
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		log.Println(err)
 		utils.ResponseValidator(ctx, utils.HandleValidatorErrors(err))
 		return
 	}
 
-	createUser, err := u.userService.CreateUser(user)
+	createUser, err := u.userService.CreateUser(input)
 	if err != nil {
 		utils.ResponseError(ctx, err)
 		return

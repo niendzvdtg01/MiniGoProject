@@ -43,6 +43,10 @@ func MapUserToDTO(user model.User) *UserRequest {
 	}
 }
 
+func (c *CreateUserInput) ToModel() model.User {
+	return model.User{}
+}
+
 func MapUserToDTOs(users []model.User) []UserRequest {
 	dtos := make([]UserRequest, len(users))
 	for _, user := range users {
