@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"backend/internal/model"
 	"backend/internal/service"
 	"backend/pkg/dto"
 	"backend/pkg/utils"
@@ -83,7 +82,9 @@ func (u *UserHandler) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	createUser, err := u.userService.CreateUser(input)
+	// for ToModel
+	user := input.MapCreateInputToModel()
+	createUser, err := u.userService.CreateUser(user)
 	if err != nil {
 		utils.ResponseError(ctx, err)
 		return
@@ -98,12 +99,14 @@ func (u *UserHandler) UpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	var user model.User
-	if err := ctx.ShouldBindJSON(&user); err != nil {
+	var input dto.UpdateUserInput
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		log.Println(err)
 		utils.ResponseValidator(ctx, utils.HandleValidatorErrors(err))
 		return
 	}
+
+	user := input.MapUpdateInputToModel()
 
 	updateUser, err := u.userService.UpdateUser(params.Uuid, user)
 	if err != nil {
@@ -112,6 +115,7 @@ func (u *UserHandler) UpdateUser(ctx *gin.Context) {
 	}
 
 	userDTO := dto.MapUserToDTO(updateUser)
+	log.Println(userDTO)
 	utils.ReponseSuccses(ctx, http.StatusOK, &userDTO)
 
 }

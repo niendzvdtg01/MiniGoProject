@@ -14,7 +14,6 @@ type UserRequest struct {
 }
 
 type CreateUserInput struct {
-	UUID     string `json:"uuid"`
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required,email,email_advance"`
 	Age      int    `json:"age" binding:"required,gt=0"`
@@ -23,7 +22,6 @@ type CreateUserInput struct {
 	Level    int    `json:"level" binding:"required,oneof=1 2"`
 }
 type UpdateUserInput struct {
-	UUID     string `json:"uuid"`
 	Name     string `json:"name" binding:"omitempty"`
 	Email    string `json:"email" binding:"omitempty,email,email_advance"`
 	Age      int    `json:"age" binding:"omitempty,gt=0"`
@@ -43,23 +41,45 @@ func MapUserToDTO(user model.User) *UserRequest {
 	}
 }
 
-func (c *CreateUserInput) ToModel() model.User {
-	return model.User{}
+func (input *CreateUserInput) MapCreateInputToModel() model.User {
+	return model.User{
+		Name:     input.Name,
+		Email:    input.Email,
+		Age:      input.Age,
+		Password: input.Password,
+		Status:   input.Status,
+		Level:    input.Level,
+	}
+}
+
+func (input *UpdateUserInput) MapUpdateInputToModel() model.User {
+	return model.User{
+		Name:     input.Name,
+		Email:    input.Email,
+		Age:      input.Age,
+		Password: input.Password,
+		Status:   input.Status,
+		Level:    input.Level,
+	}
 }
 
 func MapUserToDTOs(users []model.User) []UserRequest {
 	dtos := make([]UserRequest, len(users))
+	//make dtos to become clearer
 	for _, user := range users {
-		dto := UserRequest{
-			UUID:     user.UUID,
-			FullName: user.Name,
-			Email:    user.Email,
-			Age:      user.Age,
-			Status:   mapStatusTest(user.Status),
-			Level:    mapLevelTest(user.Level),
-		}
-		dtos = append(dtos, dto)
+		dtos = append(dtos, *MapUserToDTO(user))
 	}
+	// for _, user := range users {
+	// 	dto := UserRequest{
+	// 		UUID:     user.UUID,
+	// 		FullName: user.Name,
+	// 		Email:    user.Email,
+	// 		Age:      user.Age,
+	// 		Status:   mapStatusTest(user.Status),
+	// 		Level:    mapLevelTest(user.Level),
+	// 	}
+	// 	dtos = append(dtos, dto)
+	// }
 	return dtos
 }
 
