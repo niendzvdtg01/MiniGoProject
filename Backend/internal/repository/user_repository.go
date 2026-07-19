@@ -4,6 +4,7 @@ import (
 	"backend/internal/model"
 	"fmt"
 	"log"
+	"slices"
 )
 
 type InMemoryUserRepository struct {
@@ -42,8 +43,14 @@ func (ir *InMemoryUserRepository) UpdateUser(uuid string, users model.User) erro
 	}
 	return fmt.Errorf("Can not find user in memory!")
 }
-func (ir *InMemoryUserRepository) DeleteUser() {
-	log.Println("Get all users into user service")
+func (ir *InMemoryUserRepository) DeleteUser(uuid string) error {
+	for i, u := range ir.user {
+		if u.UUID == uuid {
+			ir.user = slices.Delete(ir.user, i, i+1)
+			return nil
+		}
+	}
+	return fmt.Errorf("user not found!!")
 }
 
 func (ir *InMemoryUserRepository) FindByEmail(email string) (model.User, bool) {

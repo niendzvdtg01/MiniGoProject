@@ -120,5 +120,16 @@ func (u *UserHandler) UpdateUser(ctx *gin.Context) {
 
 }
 func (u *UserHandler) DeleteUser(ctx *gin.Context) {
+	var params GetUserByUUIDParam
+	if err := ctx.ShouldBindUri(&params); err != nil {
+		utils.ResponseValidator(ctx, utils.HandleValidatorErrors(err))
+		return
+	}
 
+	if err := u.userService.DeleteUser(params.Uuid); err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	utils.ReponseStatusCode(ctx, http.StatusNoContent)
 }

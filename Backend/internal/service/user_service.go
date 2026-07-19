@@ -114,6 +114,10 @@ func (us *userService) UpdateUser(uuid string, user model.User) (model.User, err
 	}
 	return currentUser, nil
 }
-func (us *userService) DeleteUser() {
-	log.Println("Get all users into user service")
+func (us *userService) DeleteUser(uuid string) error {
+	if err := us.repo.DeleteUser(uuid); err != nil {
+		log.Println(err)
+		return utils.NewError("Can not delete user!!", utils.ErrCodeInternal)
+	}
+	return nil
 }

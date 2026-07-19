@@ -83,6 +83,10 @@ func ReponseSuccses(ctx *gin.Context, status int, data any) {
 	})
 }
 
+func ReponseStatusCode(ctx *gin.Context, status int) {
+	ctx.Status(status)
+}
+
 func ResponseValidator(ctx *gin.Context, data any) {
 	ctx.JSON(http.StatusBadRequest, data)
 }
