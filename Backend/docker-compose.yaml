@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+    db:
+        image: postgres:17.5-alpine3.22 #alpine cho nhẹ máy
+        container_name: postgres-db
+        restart: unless-stopped #Tự động khởi động lại
+    #environment
+        environment:
+            POSTGRES_DB: master-golang
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: 1234
+        
+    #port
+        ports:
+            - "5433:5432"
+    #volumes 
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        
+volumes:
+    pgdata: 
+
+
