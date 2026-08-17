@@ -3,6 +3,7 @@ package main
 import (
 	"backend/internal/app"
 	"backend/internal/config"
+	"backend/internal/db"
 	"backend/internal/middlewares"
 	"backend/pkg/utils"
 	"log"
@@ -19,6 +20,9 @@ func main() {
 
 	if err := utils.InitValidation(); err != nil {
 		log.Fatalf("Validator init fail!: %v", err)
+	}
+	if err := db.InitDB(); err != nil {
+		log.Fatal("Fail to connect db", err)
 	}
 	//Init config
 	cfg := config.NewConfig()
